@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Today</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #e6f1fc;
+    }
+
+    /* Header Styling */
+    header {
+      width: 100%;
+      background-color: #131f33;
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    header .back-btn {
+      color: white;
+      font-size: 28px;
+      text-decoration: none;
+      padding: 5px;
+    }
+
+    header .back-btn:hover {
+      color: #ff4c60;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .notes-container {
+      max-width: 600px;
+      margin: 100px auto 20px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 90%; /* Adjust width for smaller screens */
+    }
+
+    .notes-container h2 {
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    .notes-container label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .notes-container input[type="text"],
+    .notes-container textarea {
+      width: 95%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .notes-container textarea {
+      height: 100px;
+      resize: none;
+    }
+
+    .color-picker {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    }
+
+    .color-option {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .color-option.active {
+      border-color: black;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn.add {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    .btn.reset {
+      background-color: #dc3545;
+      color: #fff;
+      margin-left: 10px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 20px; /* Adjust title size */
+      }
+
+      header .back-btn {
+        font-size: 20px; /* Adjust back button size */
+      }
+
+      .notes-container {
+        padding: 15px; /* Reduce padding */
+      }
+
+      .notes-container h2 {
+        font-size: 18px; /* Adjust header size */
+      }
+
+      .btn {
+        font-size: 12px; /* Reduce button font size */
+        padding: 8px 15px;
+      }
+
+      .color-option {
+        width: 25px; /* Smaller color options */
+        height: 25px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 18px;
+      }
+
+      .notes-container {
+        padding: 10px; /* Further reduce padding */
+      }
+
+      .btn {
+        font-size: 10px;
+        padding: 5px 10px;
+      }
+    }
+
+      @media (max-width: 768px) {
+      .notes-container input[type="text"],
+      .notes-container textarea {
+        font-size: 12px; /* Reduce font size for smaller screens */
+        padding: 8px; /* Reduce padding for better fit */
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="./displaynote.html" class="back-btn"><i class="ri-arrow-left-line"></i></a>
+    <h1>BLOG TODAY</h1>
+    <div></div>
+  </header>
+
+  <div class="notes-container">
+    <h2>Add New Note</h2>
+    <label for="note-title">Title</label>
+    <input type="text" id="note-title" placeholder="e.g., Schedule A Meeting">
+
+    <label for="note-description">Description</label>
+    <textarea id="note-description" placeholder="Enter note description"></textarea>
+
+    <label>Select Note Color:</label>
+    <div class="color-picker">
+      <div class="color-option" data-color="blue" style="background-color: blue;"></div>
+      <div class="color-option" data-color="orange" style="background-color: orange;"></div>
+      <div class="color-option" data-color="green" style="background-color: green;"></div>
+      <div class="color-option" data-color="purple" style="background-color: purple;"></div>
+    </div>
+
+    <button class="btn add">Add</button>
+    <button class="btn reset">Reset</button>
+  </div>
+
+  <script>
+    const colorOptions = document.querySelectorAll('.color-option');
+    const addButton = document.querySelector('.btn.add');
+    const resetButton = document.querySelector('.btn.reset');
+    let selectedColor = null;
+
+    // Color picker logic
+    colorOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        colorOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+        selectedColor = option.getAttribute('data-color');
+      });
+    });
+
+    // Add button logic
+    addButton.addEventListener('click', () => {
+      const title = document.getElementById('note-title').value;
+      const description = document.getElementById('note-description').value;
+
+      if (!title || !description || !selectedColor) {
+        alert('Please fill in all fields and select a color.');
+        return;
+      }
+
+      const notes = JSON.parse(localStorage.getItem('notes')) || [];
+      const newNote = { title, description, color: selectedColor };
+
+      notes.push(newNote);
+      localStorage.setItem('notes', JSON.stringify(notes));
+      window.location.href = './displaynote.html';
+    });
+
+    // Reset button logic
+    resetButton.addEventListener('click', () => {
+      document.getElementById('note-title').value = '';
+      document.getElementById('note-description').value = '';
+      colorOptions.forEach(opt => opt.classList.remove('active'));
+      selectedColor = null;
+    });
+  </script>
+</body>
+</html>
